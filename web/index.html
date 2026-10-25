@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#183d37">
+  <meta name="description" content="A forecast-aware flexible-load scheduling prototype for Australia's National Electricity Market.">
+  <title>SunShift NEM — Forecast-aware energy scheduling</title>
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="/premium-3d.css">
+  <script defer src="/app.js"></script>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="rail" aria-label="Primary navigation">
+      <a class="brand" href="#top" aria-label="SunShift NEM home">
+        <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+        <span class="brand-name">sunshift<span>nem</span></span>
+      </a>
+      <div class="rail-rule"></div>
+      <div class="rail-section-label">WORKSPACE</div>
+      <a class="rail-link active" href="#planner"><span class="rail-icon">⌁</span> Dispatch planner</a>
+      <a class="rail-link" href="#evidence"><span class="rail-icon">◈</span> Evidence ledger</a>
+      <div class="rail-bottom">
+        <div class="local-indicator"><span class="live-dot"></span><span>LOCAL PROTOTYPE</span></div>
+        <p>No device control<br>or grid dispatch.</p>
+        <span class="version">SUNSHIFT · 0.1.0</span>
+      </div>
+    </aside>
+
+    <main id="top" class="main-content">
+      <header class="topbar">
+        <div class="breadcrumb">CLIMATECHAIN / RENEWABLE ENERGY</div>
+        <div class="privacy-pill"><span class="lock-icon">▣</span> PRIVATE · RUNNING ON THIS MAC</div>
+      </header>
+
+      <section class="intro" id="planner">
+        <div>
+          <div class="eyebrow"><span class="eyebrow-line"></span> A SMALLER, SMARTER ENERGY NETWORK</div>
+          <h1>Your sunshine.<br><em>Shared next door.</em></h1>
+          <p class="intro-copy">Your home uses its solar first. Any extra can be matched with a neighbour who needs power. The grid carries the electricity; a sharing service handles the credit.</p>
+        </div>
+        <figure class="hero-scene hero-photo" id="hero-scene">
+          <img class="hero-neighbourhood" src="/assets/australian-solar-neighbours-concept.webp" alt="Concept render of two Australian homes beside one another, with rooftop solar on one and a home battery at the other." fetchpriority="high" decoding="async">
+          <div class="photo-topline"><span class="scene-status-dot"></span> A NEIGHBOURHOOD ENERGY IDEA <span class="photo-concept-label">CONCEPT RENDER</span></div>
+          <div class="photo-energy-route" aria-hidden="true">
+            <span class="photo-point solar-point"></span><span class="photo-point grid-point"></span><span class="photo-point home-point"></span>
+            <span class="photo-route-line"></span><span class="photo-route-runner"></span>
+            <div class="photo-stage solar-stage"><b>YOUR ROOF</b><small>solar panels</small></div>
+            <div class="photo-stage neighbour-stage"><b>NEXT DOOR</b><small>home or battery</small></div>
+          </div>
+          <div class="photo-bottomline"><span>EXTRA SOLAR</span><b>→</b><span>SHARED GRID</span><b>→</b><span>NEIGHBOUR USE</span></div>
+          <figcaption>AI-generated concept visual · no direct house-to-house wire</figcaption>
+        </figure>
+      </section>
+
+      <div class="data-ribbon" role="status">
+        <div class="ribbon-item"><span class="ribbon-mark amber"></span><span id="data-quality">P2P SCENARIO · NOT SETTLEMENT DATA</span></div>
+        <span class="ribbon-separator">/</span>
+        <div class="ribbon-item"><span class="ribbon-mark green"></span><span id="region-name">South Australia · NEM region SA1</span></div>
+        <span class="ribbon-separator">/</span>
+        <div class="ribbon-item data-source" id="source-label">Illustrative solar producer + community buyer profiles</div>
+        <button id="live-weather" class="text-button" type="button">Load live weather ↗</button>
+      </div>
+
+      <section class="planner-grid" aria-label="Dispatch planner">
+        <aside class="controls-panel">
+          <div class="panel-kicker">A TWO-HOME SCENARIO</div>
+          <h2>Set up the homes</h2>
+          <p class="panel-subtitle">Your solar home → neighbour who needs power</p>
+
+          <div class="field-row-head"><label class="field-label" for="pv-capacity">Your solar system size</label><output id="pv-value">8 kW</output></div>
+          <input id="pv-capacity" type="range" min="1" max="20" step="0.5" value="8">
+          <div class="range-limits"><span>1 kW</span><span>20 kW</span></div>
+
+          <div class="field-row-head"><label class="field-label" for="site-load">Neighbour's typical electricity use</label><output id="load-value">1.5 kW</output></div>
+          <input id="site-load" type="range" min="0.2" max="10" step="0.1" value="1.5">
+          <div class="range-limits"><span>0.2 kW</span><span>10 kW average</span></div>
+
+          <details class="advanced-inputs">
+            <summary>Optional battery and pricing assumptions</summary>
+            <div class="advanced-fields">
+              <div class="field-row-head"><label class="field-label" for="flex-energy">Neighbour's flexible energy / battery</label><output id="energy-value">5 kWh</output></div>
+              <input id="flex-energy" type="range" min="0" max="20" step="1" value="5">
+              <div class="range-limits"><span>0 kWh</span><span>20 kWh / day</span></div>
+              <div class="field-row-head"><label class="field-label" for="max-power">Battery charge limit</label><output id="power-value">2 kW</output></div>
+              <input id="max-power" type="range" min="0.5" max="10" step="0.5" value="2">
+              <div class="range-limits"><span>0.5 kW</span><span>10 kW</span></div>
+              <div class="field-row-head"><label class="field-label" for="transfer-limit">Maximum peer match</label><output id="transfer-value">5 kW</output></div>
+              <input id="transfer-limit" type="range" min="1" max="15" step="0.5" value="5">
+              <div class="range-limits"><span>1 kW</span><span>15 kW</span></div>
+              <label class="field-label" for="region">NEM region</label>
+              <select id="region" class="select-control">
+                <option value="SA" selected>South Australia · SA1</option>
+                <option value="NSW">New South Wales · NSW1</option>
+                <option value="VIC">Victoria · VIC1</option>
+                <option value="QLD">Queensland · QLD1</option>
+                <option value="TAS">Tasmania · TAS1</option>
+              </select>
+              <label class="field-label" for="emissions-factor">Illustrative grid factor (kg CO₂e/kWh)</label>
+              <input id="emissions-factor" class="number-control" type="number" min="0" max="2" step="0.01" value="0.65">
+              <p>Replace with a cited region/time-specific factor before reporting emissions impact.</p>
+              <label class="field-label" for="p2p-price">Agreed P2P energy price (¢/kWh)</label>
+              <input id="p2p-price" class="number-control" type="number" min="0" max="200" step="0.5" value="18">
+              <label class="field-label" for="grid-price">Illustrative grid reference price (¢/kWh)</label>
+              <input id="grid-price" class="number-control" type="number" min="0" max="200" step="0.5" value="32">
+              <p>Scenario prices only; excludes network charges, retailer terms, taxes and settlement rules.</p>
+              <label class="field-label profile-label" for="profile-csv">Use a 24-hour participant CSV</label>
+              <input id="profile-csv" class="file-control" type="file" accept=".csv,text/csv">
+              <p>Required columns: hour,seller_solar_kwh,buyer_load_kwh. <a href="/api/sample-profile.csv">Download illustrative sample</a>.</p>
+              <div id="profile-status" class="profile-status">Using the built-in illustrative profile.</div>
+            </div>
+          </details>
+
+          <button id="build-plan" class="primary-button" type="button"><span>Show what could be shared</span><span aria-hidden="true">↗</span></button>
+          <div id="planner-message" class="planner-message" role="status">Ready to show an illustrative two-home scenario.</div>
+          <div class="input-note"><span>i</span><p>Weather can be live; participant meter profiles and P2P settlement are simulated. No trading or dispatch command is sent.</p></div>
+        </aside>
+
+        <div class="results-column">
+          <section class="story-card" aria-labelledby="story-title">
+            <div class="story-topline"><span class="story-tag"><i></i> THE SIMPLE VERSION</span><span id="story-period">Illustrative day · not a live trade</span></div>
+            <h2 id="story-title">What the neighbour could use</h2>
+            <div class="story-impact">
+              <div class="matched-energy"><span>MODELLED SOLAR MATCH</span><strong><b id="story-match">—</b><small>kWh</small></strong><em>across this 24-hour scenario</em></div>
+              <div class="impact-copy">
+                <p id="story-result">Choose <strong>Show what could be shared</strong> to see a scenario.</p>
+                <div class="mini-route"><span>Your home</span><b>→</b><span>shared grid</span><b>→</b><span>neighbour</span></div>
+                <div class="monthly-credit" aria-live="polite">
+                  <div class="monthly-credit-main"><span>ESTIMATED SELLER CREDIT · 30 DAYS</span><strong>$<b id="story-monthly-credit">—</b></strong></div>
+                  <div class="monthly-credit-basis"><b>If this example day repeated</b><small id="story-credit-basis">Build a scenario to calculate a monthly illustration.</small></div>
+                </div>
+              </div>
+            </div>
+            <div class="story-explainer"><span class="explainer-icon">i</span><p>The grid carries the electricity. A retailer or sharing service handles the credit—there’s no wire directly between the houses.</p></div>
+          </section>
+
+          <section id="evidence" class="evidence-card" aria-labelledby="evidence-title">
+            <div class="evidence-copy">
+              <div class="panel-kicker">PLAN INTEGRITY</div>
+              <h2 id="evidence-title">Keep a verifiable plan record</h2>
+              <p>Save this plan and its proposed hourly matches in a local tamper-evident hash chain. This is not a blockchain transaction, meter proof or energy settlement.</p>
+            </div>
+            <div class="evidence-actions">
+              <button id="record-receipt" class="secondary-button" type="button" disabled>Record local plan receipt</button>
+              <div id="ledger-status" class="ledger-status">Build a plan to enable its receipt.</div>
+            </div>
+            <div id="receipt-detail" class="receipt-detail" hidden></div>
+          </section>
+
+          <details class="technical-details">
+            <summary>See the charts and technical estimates</summary>
+            <div class="technical-content">
+          <section class="metric-grid" aria-label="Plan results">
+            <article class="metric-card featured">
+              <div class="metric-label">PEER SOLAR MATCHED</div>
+              <div class="metric-value"><span id="metric-solar">—</span><small>kWh / day</small></div>
+              <div class="metric-foot"><span class="metric-arrow">↗</span> local generation delivered to buyer</div>
+            </article>
+            <article class="metric-card">
+              <div class="metric-label">BUYER IMPORT AVOIDED*</div>
+              <div class="metric-value"><span id="metric-avoided">—</span><small>kWh / day</small></div>
+              <div class="metric-foot">vs. no peer-trade baseline</div>
+            </article>
+            <article class="metric-card">
+              <div class="metric-label">PEAK IMPORT REDUCTION*</div>
+              <div class="metric-value"><span id="metric-peak">—</span><small>kW</small></div>
+              <div class="metric-foot" id="peak-caption">Coordinated buyer profile</div>
+            </article>
+            <article class="metric-card">
+              <div class="metric-label">BUYER COST SAVED*</div>
+              <div class="metric-value"><span id="metric-cost">—</span><small>AUD / day</small></div>
+              <div class="metric-foot">At the entered P2P and grid prices</div>
+            </article>
+          </section>
+
+          <section class="chart-card" aria-labelledby="chart-title">
+            <div class="chart-heading">
+              <div><div class="panel-kicker">24-HOUR MICROGRID DISPATCH</div><h2 id="chart-title">Match the peer before exporting</h2></div>
+              <div class="chart-unit">HOURLY ENERGY · kWh</div>
+            </div>
+            <div id="dispatch-chart" class="chart-wrap" role="img" aria-label="Hourly peer solar, buyer demand and grid imports comparison"></div>
+            <div class="chart-legend">
+              <span><i class="legend-swatch solar"></i>Producer solar offer</span>
+              <span><i class="legend-swatch base"></i>Buyer + storage demand</span>
+              <span><i class="legend-swatch baseline"></i>Buyer grid import · no trade</span>
+              <span><i class="legend-swatch optimized"></i>Buyer grid import · coordinated</span>
+            </div>
+            <div class="chart-caption"><span>*Modelled comparison, not metered settlement. Emissions proxy: <strong id="metric-carbon">—</strong> kg CO₂e.</span><span id="plan-method">Run the coordinator to view a plan.</span></div>
+          </section>
+
+          <section class="schedule-card" aria-labelledby="schedule-title">
+            <div class="schedule-heading"><div><div class="panel-kicker">BUYER STORAGE SCHEDULE</div><h2 id="schedule-title">Coordinated charge windows</h2></div><span id="schedule-total" class="schedule-total">— kWh assigned</span></div>
+            <div id="schedule-bars" class="schedule-bars"><div class="schedule-empty">Build a plan to see when flexible energy is scheduled.</div></div>
+          </section>
+
+            </div>
+          </details>
+          <div class="footnote">Prototype only · Does not submit bids, settle peer trades or control devices. Replace illustrative participant profiles with consented meter data and validate network, market and consumer protections before deployment.</div>
+        </div>
+      </section>
+      <footer class="footer"><span>SUNSHIFT NEM · RESEARCH PROTOTYPE</span><span>Designed for transparent, forecast-aware flexibility</span></footer>
+    </main>
+  </div>
+</body>
+</html>

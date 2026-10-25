@@ -1,0 +1,15 @@
+__pycache__/
+*.py[cod]
+.venv/
+.env
+.DS_Store
+data/receipts.local.jsonl
+*.log
+.vercel/
+node_modules/
+outputs/
+outputs/hackathon_submission/video_frames/
+outputs/hackathon_submission/capture_demo.js
+outputs/hackathon_submission/make_cursor.py
+outputs/hackathon_submission/video-render-config.json
+.vercel

@@ -1,0 +1,12 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "rewrites": [
+    { "source": "/api/sample-profile.csv", "destination": "/data/sample_participant_profile.csv" },
+    { "source": "/", "destination": "/web/index.html" },
+    { "source": "/app.js", "destination": "/web/app.js" },
+    { "source": "/styles.css", "destination": "/web/styles.css" },
+    { "source": "/premium-3d.css", "destination": "/web/premium-3d.css" },
+    { "source": "/assets/:path*", "destination": "/web/assets/:path*" },
+    { "source": "/hackathon-explainer.html", "destination": "/web/hackathon-explainer.html" }
+  ]
+}
