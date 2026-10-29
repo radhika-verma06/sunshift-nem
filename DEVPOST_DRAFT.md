@@ -1,3 +1,5 @@
+> **Superseded for the Nebius hackathon.** This file describes the earlier two-home SunShift NEM prototype. The current SunShift Flex submission is in [`docs/SUBMISSION.md`](docs/SUBMISSION.md), and the demo script is [`docs/DEMO_SCRIPT.md`](docs/DEMO_SCRIPT.md).
+
 # Devpost submission draft — SunShift NEM
 
 ## Project name
